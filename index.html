@@ -164,8 +164,17 @@
     let display = document.getElementById("display");
 
     function appendValue(value) {
-      display.value += value;
+  const lastChar = display.value.slice(-1);
+
+  // Prevent multiple operators
+  if (["+", "-", "*", "/"].includes(value)) {
+    if (display.value === "" || ["+", "-", "*", "/"].includes(lastChar)) {
+      return;
     }
+  }
+
+  display.value += value;
+}
 
     function clearDisplay() {
       display.value = "";
@@ -186,6 +195,43 @@
 
       document.getElementById(section).style.display = "flex";
     }
+
+    // 🔥 KEYBOARD SUPPORT
+document.addEventListener("keydown", function(event) {
+  const key = event.key;
+
+  // Numbers
+  if (!isNaN(key)) {
+    appendValue(key);
+  }
+
+  // Operators
+  else if (["+", "-", "*", "/"].includes(key)) {
+    appendValue(key);
+  }
+
+  // Decimal
+  else if (key === ".") {
+    appendValue(".");
+  }
+
+  // Enter = calculate
+  else if (key === "Enter") {
+    event.preventDefault();
+    calculate();
+  }
+
+  // Backspace = delete last character
+  else if (key === "Backspace") {
+    display.value = display.value.slice(0, -1);
+  }
+
+  // Escape = clear
+  else if (key === "Escape") {
+    clearDisplay();
+  }
+});
+
   </script>
 
 </body>
